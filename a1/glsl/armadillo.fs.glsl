@@ -4,7 +4,7 @@ varying vec3 interpolatedNormal;
 void main() {
     // Set final rendered color according to the surface normal
   vec3 N = normalize(interpolatedNormal);
-  gl_FragColor = vec4(N, 1.0)
+  gl_FragColor = vec4(N, 1.0);
 
   // gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
 }
