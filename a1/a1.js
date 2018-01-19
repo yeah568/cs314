@@ -218,7 +218,11 @@ scene.add(customObject);
 /////////////////////////////////////////////////////////////////////////////////////
 
 // MATERIALS
-var armadilloMaterial = new THREE.ShaderMaterial();
+var armadilloMaterial = new THREE.ShaderMaterial({
+  uniforms: {
+    lightPosition: { value: new THREE.Vector3(0, 0, -1) }
+  }
+});
 
 // LOAD SHADERS
 var shaderFiles = [
@@ -306,6 +310,8 @@ function checkKeyboard() {
   light.position.x = THREE.Math.clamp(light.position.x, -5, 5);
   light.position.y = THREE.Math.clamp(light.position.y, -5, 5);
   sphere.position.set(light.position.x, light.position.y, light.position.z);
+  console.log(`setting light to (${light.position.x}, ${light.position.y}, ${light.position.z})`);
+  armadilloMaterial.uniforms.lightPosition.value = new THREE.Vector3(light.position.x, light.position.y, light.position.z);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
