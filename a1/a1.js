@@ -291,19 +291,26 @@ scene.add(cube1, cube2, cube3);
 // "creative" stuff
 ///////////////////////////////////////////////////////////////////////////////////////
 // MATERIALS
-const rainbowMaterial = new THREE.ShaderMaterial();
+const dynamicMaterial = new THREE.ShaderMaterial({
+  uniforms:{
+      lightPosition:{
+         type:"v3",
+         value: new THREE.Vector3(0.0, 0.0, -1.0)
+      }
+   },
+});
 
 // LOAD SHADERS
-const rainbowShaderFiles = [
-  'glsl/rainbow.vs.glsl',
-  'glsl/rainbow.fs.glsl'
+const dynamicShaderFiles = [
+  'glsl/dynamic.vs.glsl',
+  'glsl/dynamic.fs.glsl'
 ];
 
-new THREE.SourceLoader().load(rainbowShaderFiles, function(shaders) {
-  rainbowMaterial.vertexShader = shaders['glsl/rainbow.vs.glsl'];
-  rainbowMaterial.fragmentShader = shaders['glsl/rainbow.fs.glsl'];
+new THREE.SourceLoader().load(dynamicShaderFiles, function(shaders) {
+  dynamicMaterial.vertexShader = shaders['glsl/dynamic.vs.glsl'];
+  dynamicMaterial.fragmentShader = shaders['glsl/dynamic.fs.glsl'];
 
-  renderTorusKnot(rainbowMaterial);
+  renderTorusKnot(dynamicMaterial);
 });
 
 function renderTorusKnot(material) {
@@ -311,6 +318,25 @@ function renderTorusKnot(material) {
   const torusKnot = new THREE.Mesh( torusKnotGeometry, material );
   torusKnot.position.set(-3, 1, 3);
   scene.add( torusKnot );
+}
+
+const rainbowMaterial = new THREE.ShaderMaterial();
+const rainbowShaderFiles = [
+  'glsl/rainbow.vs.glsl',
+  'glsl/rainbow.fs.glsl'
+];
+new THREE.SourceLoader().load(rainbowShaderFiles, function(shaders) {
+  rainbowMaterial.vertexShader = shaders['glsl/rainbow.vs.glsl'];
+  rainbowMaterial.fragmentShader = shaders['glsl/rainbow.fs.glsl'];
+
+  renderDodecahedron(rainbowMaterial);
+});
+
+function renderDodecahedron(material) {
+  const dodecahedronGeometry = new THREE.DodecahedronGeometry();
+  const dodecahedron = new THREE.Mesh( dodecahedronGeometry, material );
+  dodecahedron.position.set(4, 1, 3);
+  scene.add( dodecahedron );
 }
 
 
@@ -340,7 +366,6 @@ function renderIcosahedron(material) {
 var keyboard = new THREEx.KeyboardState();
 function checkKeyboard() {
   if (keyboard.pressed("W")) {
-    console.log('W pressed');
     light.position.y += 0.1;
   } else if (keyboard.pressed("S"))
     light.position.y -= 0.1;
@@ -352,6 +377,7 @@ function checkKeyboard() {
   light.position.x = THREE.Math.clamp(light.position.x, -5, 5);
   light.position.y = THREE.Math.clamp(light.position.y, -5, 5);
   sphere.position.set(light.position.x, light.position.y, light.position.z);
+  dynamicMaterial.uniforms.lightPosition.value = new THREE.Vector3(light.position.x, light.position.y, light.position.z);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
