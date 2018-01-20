@@ -288,6 +288,52 @@ scene.add(cube1, cube2, cube3);
 
 
 ///////////////////////////////////////////////////////////////////////////////////////
+// "creative" stuff
+///////////////////////////////////////////////////////////////////////////////////////
+// MATERIALS
+const rainbowMaterial = new THREE.ShaderMaterial();
+
+// LOAD SHADERS
+const rainbowShaderFiles = [
+  'glsl/rainbow.vs.glsl',
+  'glsl/rainbow.fs.glsl'
+];
+
+new THREE.SourceLoader().load(rainbowShaderFiles, function(shaders) {
+  rainbowMaterial.vertexShader = shaders['glsl/rainbow.vs.glsl'];
+  rainbowMaterial.fragmentShader = shaders['glsl/rainbow.fs.glsl'];
+
+  renderTorusKnot(rainbowMaterial);
+});
+
+function renderTorusKnot(material) {
+  const torusKnotGeometry = new THREE.TorusKnotGeometry(1, 0.4, 64, 8);
+  const torusKnot = new THREE.Mesh( torusKnotGeometry, material );
+  torusKnot.position.set(-3, 1, 3);
+  scene.add( torusKnot );
+}
+
+
+const randomMaterial = new THREE.ShaderMaterial();
+const randomShaderFiles = [
+  'glsl/random.vs.glsl',
+  'glsl/random.fs.glsl'
+];
+new THREE.SourceLoader().load(randomShaderFiles, function(shaders) {
+  randomMaterial.vertexShader = shaders['glsl/random.vs.glsl'];
+  randomMaterial.fragmentShader = shaders['glsl/random.fs.glsl'];
+
+  renderIcosahedron(randomMaterial);
+});
+
+function renderIcosahedron(material) {
+  const icosahedronGeometry = new THREE.IcosahedronGeometry();
+  const icosahedron = new THREE.Mesh( icosahedronGeometry, material );
+  icosahedron.position.set(1, 1, 3);
+  scene.add( icosahedron );
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
 // LISTEN TO KEYBOARD
 ///////////////////////////////////////////////////////////////////////////////////////
 
