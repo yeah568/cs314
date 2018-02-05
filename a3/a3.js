@@ -116,15 +116,22 @@ trexKFobj.add(new Keyframe('rest pose', 4.0, [0, 1.9, 0]));
 console.log('kf 0.1 = ', trexKFobj.getAvars(0.1));    // interpolate for t=0.1
 console.log('kf 2.9 = ', trexKFobj.getAvars(2.9));    // interpolate for t=2.9
 
-// keyframes for mydino:    name, time, [x, y, theta1, theta2]
+// keyframes for mydino:    name, time, [x, y, theta1, theta2, theta3 (rot for body)]
 var mydinoKFobj = new KFobj(mydinoSetMatrices);
-mydinoKFobj.add(new Keyframe('rest pose', 0.0, [8, 4, 30, -30]));
-mydinoKFobj.add(new Keyframe('rest pose', 0.5, [8, 5, 20, -20]));
-mydinoKFobj.add(new Keyframe('rest pose', 1.0, [8, 5, -20, 20]));
-mydinoKFobj.add(new Keyframe('rest pose', 1.5, [8, 4, -30, 30]));
-mydinoKFobj.add(new Keyframe('rest pose', 2.0, [8, 5, -20, 20]));
-mydinoKFobj.add(new Keyframe('rest pose', 2.5, [8, 5, 20, -20]));
-mydinoKFobj.add(new Keyframe('rest pose', 3.0, [8, 4, 30, -30]));
+mydinoKFobj.add(new Keyframe('rest pose', 0.0, [8, 3, 30, -30, 0]));
+mydinoKFobj.add(new Keyframe('rest pose', 0.5, [8, 3.5, 20, -20, 30]));
+mydinoKFobj.add(new Keyframe('rest pose', 1.0, [8, 3.5, -20, 20, 60]));
+mydinoKFobj.add(new Keyframe('rest pose', 1.5, [8, 3, -30, 30, 90]));
+mydinoKFobj.add(new Keyframe('rest pose', 2.0, [8, 3.5, -20, 20, 120]));
+mydinoKFobj.add(new Keyframe('rest pose', 2.5, [8, 3.5, 20, -20, 150]));
+mydinoKFobj.add(new Keyframe('rest pose', 3.0, [8, 3, 30, -30, 180]));
+mydinoKFobj.add(new Keyframe('rest pose', 3.5, [8, 3.5, 20, -20, 210]));
+mydinoKFobj.add(new Keyframe('rest pose', 4.0, [8, 3.5, -20, 20, 240]));
+mydinoKFobj.add(new Keyframe('rest pose', 4.5, [8, 3, -30, 30, 270]));
+mydinoKFobj.add(new Keyframe('rest pose', 5.0, [8, 3.5, -20, 20, 300]));
+mydinoKFobj.add(new Keyframe('rest pose', 5.5, [8, 3.5, 20, -20, 330]));
+mydinoKFobj.add(new Keyframe('rest pose', 6.0, [8, 3, 30, -30, 360]));
+
 
 // optional:   allow avar indexing by name
 // i.e., instead of   avar[1]    one can also use:    avar[ trexIndex["y"]]  
@@ -505,7 +512,9 @@ function mydinoSetMatrices(avars) {
     }
 
     myDino.torso.matrix.identity();             // root of the hierarchy
-    myDino.torso.matrix.multiply(new THREE.Matrix4().makeTranslation(avars[0], avars[1], 0)); // translate body-center up
+    myDino.torso.matrix.multiply(new THREE.Matrix4().makeRotationY(avars[4] * Math.PI/180));
+    myDino.torso.matrix.multiply(new THREE.Matrix4().makeTranslation(0, 0, -3));
+    myDino.torso.matrix.multiply(new THREE.Matrix4().makeTranslation(0, avars[1], 0)); // translate body-center up
     myDino.torso.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 6)); // rotate torso
     myDino.torso.updateMatrixWorld();
 
