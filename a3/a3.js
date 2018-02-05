@@ -332,6 +332,22 @@ function initObjects() {
     myDino.leftClaw = new THREE.Mesh(clawGeometry, dinoGreenMaterial);
     myDino.rightClaw = new THREE.Mesh(clawGeometry, dinoGreenMaterial);
 
+    const femurGeometry = new THREE.BoxGeometry(1.25, 0.5, 0.5);
+    myDino.leftFemur = new THREE.Mesh(femurGeometry, dinoGreenMaterial);
+    myDino.rightFemur = new THREE.Mesh(femurGeometry, dinoGreenMaterial);
+
+    const tibiaGeometry = new THREE.BoxGeometry(1.25, 0.5, 0.5);
+    myDino.leftTibia = new THREE.Mesh(tibiaGeometry, dinoGreenMaterial);
+    myDino.rightTibia = new THREE.Mesh(tibiaGeometry, dinoGreenMaterial);
+
+    const metatarsalsGeometry = new THREE.BoxGeometry(1, 0.5, 0.5);
+    myDino.leftMetatarsals = new THREE.Mesh(metatarsalsGeometry, dinoGreenMaterial);
+    myDino.rightMetatarsals = new THREE.Mesh(metatarsalsGeometry, dinoGreenMaterial);
+
+    const footGeometry = new THREE.BoxGeometry(1.5, 0.5, 0.75);
+    myDino.leftFoot = new THREE.Mesh(footGeometry, dinoGreenMaterial);
+    myDino.rightFoot = new THREE.Mesh(footGeometry, dinoGreenMaterial);
+
     for (let part in myDino) {
         scene.add(myDino[part]);
     }
@@ -549,6 +565,46 @@ function mydinoSetMatrices(avars) {
     myDino.rightClaw.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 2));
     myDino.rightClaw.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.25, 0.25, 0));
     myDino.rightClaw.updateMatrixWorld();
+
+    myDino.leftFemur.matrix.copy(myDino.torso.matrix);
+    myDino.leftFemur.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI/6));
+    myDino.leftFemur.matrix.multiply(new THREE.Matrix4().makeTranslation(-1.5, -0.875, 0.625));
+    myDino.leftFemur.updateMatrixWorld();
+
+    myDino.rightFemur.matrix.copy(myDino.torso.matrix);
+    myDino.rightFemur.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI/6));
+    myDino.rightFemur.matrix.multiply(new THREE.Matrix4().makeTranslation(-1.5, -0.875, -0.625));
+    myDino.rightFemur.updateMatrixWorld();
+
+    myDino.leftTibia.matrix.copy(myDino.leftFemur.matrix);
+    myDino.leftTibia.matrix.multiply(new THREE.Matrix4().makeRotationZ(-Math.PI/2));
+    myDino.leftTibia.matrix.multiply(new THREE.Matrix4().makeTranslation(0.5, -0.375, 0));
+    myDino.leftTibia.updateMatrixWorld();
+
+    myDino.rightTibia.matrix.copy(myDino.rightFemur.matrix);
+    myDino.rightTibia.matrix.multiply(new THREE.Matrix4().makeRotationZ(-Math.PI/2));
+    myDino.rightTibia.matrix.multiply(new THREE.Matrix4().makeTranslation(0.5, -0.375, 0));
+    myDino.rightTibia.updateMatrixWorld();
+    
+    myDino.leftMetatarsals.matrix.copy(myDino.leftTibia.matrix);
+    myDino.leftMetatarsals.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI/2 + Math.PI / 6));
+    myDino.leftMetatarsals.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5, -0.375, 0));
+    myDino.leftMetatarsals.updateMatrixWorld();
+
+    myDino.rightMetatarsals.matrix.copy(myDino.rightTibia.matrix);
+    myDino.rightMetatarsals.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI/2 + Math.PI / 6));
+    myDino.rightMetatarsals.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5, -0.375, 0));
+    myDino.rightMetatarsals.updateMatrixWorld();
+
+    myDino.leftFoot.matrix.copy(myDino.leftMetatarsals.matrix);
+    myDino.leftFoot.matrix.multiply(new THREE.Matrix4().makeRotationZ(-Math.PI/2));
+    myDino.leftFoot.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5, -0.25, 0));
+    myDino.leftFoot.updateMatrixWorld();
+
+    myDino.rightFoot.matrix.copy(myDino.rightMetatarsals.matrix);
+    myDino.rightFoot.matrix.multiply(new THREE.Matrix4().makeRotationZ(-Math.PI/2));
+    myDino.rightFoot.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5, -0.25, 0));
+    myDino.rightFoot.updateMatrixWorld();
 }
 
 
