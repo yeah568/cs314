@@ -497,6 +497,7 @@ function onResourcesLoaded(){
     meshes["teapot1"] = models.teapot.mesh.clone();
     meshes["minicooper1"] = models.minicooper.mesh.clone();
     meshes["minicooper2"] = models.minicooper.mesh.clone();
+    meshes["minicooper2018"] = models.minicooper.mesh.clone();
     meshes["trex1"] = models.trex.mesh.clone();
     meshes["trex2"] = models.trex.mesh.clone();
     
@@ -525,6 +526,11 @@ function onResourcesLoaded(){
     meshes["minicooper2"].scale.set(0.025, 0.025, 0.025);
     meshes["minicooper2"].rotation.set(-Math.PI/2, 0, Math.PI/2);
     scene.add(meshes["minicooper2"]);
+
+    meshes['minicooper2018'].position.set(6, 0, -5);
+    meshes['minicooper2018'].scale.set(0.025, 0.025, 0.025);
+    meshes['minicooper2018'].rotation.set(-Math.PI/2, 0, 0);
+    scene.add(meshes['minicooper2018']);
 
     meshes["trex1"].position.set(-4, 1.90, -2);
     meshes["trex1"].scale.set(1.5,1.5,1.5);
