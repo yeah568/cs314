@@ -500,25 +500,6 @@ function trexSetMatrices(avars) {
 ///////////////////////////////////////////////////////////////////////////////////////
 
 function mydinoSetMatrices(avars) {
-    // body.matrixAutoUpdate = false;
-    // body.matrix.identity();                // root of the hierarchy
-    // body.matrix.multiply(new THREE.Matrix4().makeTranslation(avars[0], avars[1], 0));   // translate body-center up
-    // body.updateMatrixWorld();
-
-    // leftLeg.matrixAutoUpdate = false;
-    // leftLeg.matrix.copy(body.matrix);      // start with the parent's matrix
-    // leftLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0.0, -0.4, -0.125));     // translate to hip
-    // leftLeg.matrix.multiply(new THREE.Matrix4().makeRotationZ(avars[2] * Math.PI / 180));  // rotate about hip
-    // leftLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0, -1.0, 0));           // translate to center of upper leg
-    // leftLeg.updateMatrixWorld();
-
-    // rightLeg.matrixAutoUpdate = false;
-    // rightLeg.matrix.copy(body.matrix);     // start with the parent's matrix
-    // rightLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0.0, -0.4, 0.125));     // translate to hip
-    // rightLeg.matrix.multiply(new THREE.Matrix4().makeRotationZ(avars[3] * Math.PI / 180));  // rotate about hip
-    // rightLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0, -1.0, 0));            // translate to center of upper leg
-    // rightLeg.updateMatrixWorld();
-
     for (const part in myDino) {
         myDino[part].matrixAutoUpdate = false;
     }
