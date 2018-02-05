@@ -534,8 +534,10 @@ function mydinoSetMatrices(avars) {
     myDino.head.updateMatrixWorld();
 
     myDino.tail.matrix.copy(myDino.torso.matrix);
-    myDino.tail.matrix.multiply(new THREE.Matrix4().makeTranslation(1.75, -1.1, 0));
+    myDino.tail.matrix.multiply(new THREE.Matrix4().makeTranslation(0.75, -1.1, 0));
     myDino.tail.matrix.multiply(new THREE.Matrix4().makeRotationZ(-Math.PI / 2));
+    myDino.tail.matrix.multiply(new THREE.Matrix4().makeRotationX(avars[3] * Math.PI/180));
+    myDino.tail.matrix.multiply(new THREE.Matrix4().makeTranslation(0, 0.9, 0));
     myDino.tail.updateMatrixWorld();
 
     myDino.leftUpperArm.matrix.copy(myDino.torso.matrix);
@@ -565,7 +567,7 @@ function mydinoSetMatrices(avars) {
     myDino.rightClaw.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 2));
     myDino.rightClaw.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.25, 0.25, 0));
     myDino.rightClaw.updateMatrixWorld();
-    
+
     myDino.leftFemur.matrix.copy(myDino.torso.matrix);
     myDino.leftFemur.matrix.multiply(new THREE.Matrix4().makeTranslation(0, -1, 0.625));
     myDino.leftFemur.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 6 + avars[2] * Math.PI / 180)); //Math.PI/6));
