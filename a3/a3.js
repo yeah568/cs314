@@ -118,13 +118,13 @@ console.log('kf 2.9 = ', trexKFobj.getAvars(2.9));    // interpolate for t=2.9
 
 // keyframes for mydino:    name, time, [x, y, theta1, theta2]
 var mydinoKFobj = new KFobj(mydinoSetMatrices);
-mydinoKFobj.add(new Keyframe('rest pose', 0.0, [8, 1, 30, -30]));
-mydinoKFobj.add(new Keyframe('rest pose', 0.5, [8, 1.8, 20, -20]));
-mydinoKFobj.add(new Keyframe('rest pose', 1.0, [8, 1.8, -20, 20]));
-mydinoKFobj.add(new Keyframe('rest pose', 1.5, [8, 1, -30, 30]));
-mydinoKFobj.add(new Keyframe('rest pose', 2.0, [8, 1.8, -20, 20]));
-mydinoKFobj.add(new Keyframe('rest pose', 2.5, [8, 1.8, 20, -20]));
-mydinoKFobj.add(new Keyframe('rest pose', 3.0, [8, 1, 30, -30]));
+mydinoKFobj.add(new Keyframe('rest pose', 0.0, [8, 4, 30, -30]));
+mydinoKFobj.add(new Keyframe('rest pose', 0.5, [8, 5, 20, -20]));
+mydinoKFobj.add(new Keyframe('rest pose', 1.0, [8, 5, -20, 20]));
+mydinoKFobj.add(new Keyframe('rest pose', 1.5, [8, 4, -30, 30]));
+mydinoKFobj.add(new Keyframe('rest pose', 2.0, [8, 5, -20, 20]));
+mydinoKFobj.add(new Keyframe('rest pose', 2.5, [8, 5, 20, -20]));
+mydinoKFobj.add(new Keyframe('rest pose', 3.0, [8, 4, 30, -30]));
 
 // optional:   allow avar indexing by name
 // i.e., instead of   avar[1]    one can also use:    avar[ trexIndex["y"]]  
@@ -217,6 +217,7 @@ function initLights() {
 // initObjects():  setup up scene
 ////////////////////////////////////////////////////////////////////////	
 
+
 function initObjects() {
 
     // torus
@@ -308,16 +309,35 @@ function initObjects() {
     laserLine = new THREE.Line(geom, laserLineMaterial);
     scene.add(laserLine);
 
-    // body
-    bodyGeometry = new THREE.BoxGeometry(0.25, 0.8, 0.5);    // width, height, depth
-    legGeometry = new THREE.BoxGeometry(0.15, 1.0, 0.15);    // width, height, depth
-    body = new THREE.Mesh(bodyGeometry, dinoGreenMaterial);
-    leftLeg = new THREE.Mesh(legGeometry, dinoGreenMaterial);
-    rightLeg = new THREE.Mesh(legGeometry, dinoGreenMaterial);
-    scene.add(body);
-    scene.add(leftLeg);
-    scene.add(rightLeg);
+    // oh boy here we go
+    // custom dinosaur
+    const torsoGeometry = new THREE.BoxGeometry(1.5, 3, 1.5);
+    myDino.torso = new THREE.Mesh(torsoGeometry, dinoGreenMaterial);
+
+    const headGeometry = new THREE.BoxGeometry(2, 1, 1);
+    myDino.head = new THREE.Mesh(headGeometry, dinoGreenMaterial);
+
+    const tailGeometry = new THREE.CylinderGeometry(0, 0.3, 2, 20);
+    myDino.tail = new THREE.Mesh(tailGeometry, dinoGreenMaterial);
+
+    const upperArmGeometry = new THREE.BoxGeometry(1, 0.25, 0.25);
+    myDino.leftUpperArm = new THREE.Mesh(upperArmGeometry, dinoGreenMaterial);
+    myDino.rightUpperArm = new THREE.Mesh(upperArmGeometry, dinoGreenMaterial);
+
+    const forearmGeometry = new THREE.BoxGeometry(0.75, 0.25, 0.25);
+    myDino.leftForearm = new THREE.Mesh(forearmGeometry, dinoGreenMaterial);
+    myDino.rightForearm = new THREE.Mesh(forearmGeometry, dinoGreenMaterial);
+
+    const clawGeometry = new THREE.BoxGeometry(0.75, 0.25, 0.25);
+    myDino.leftClaw = new THREE.Mesh(clawGeometry, dinoGreenMaterial);
+    myDino.rightClaw = new THREE.Mesh(clawGeometry, dinoGreenMaterial);
+
+    for (let part in myDino) {
+        scene.add(myDino[part]);
+    }
 }
+
+const myDino = {};
 
 ////////////////////////////////////////////////////////////////////////	
 // initFileObjects():    read object data from OBJ files;  see onResourcesLoaded() for instances
@@ -464,25 +484,73 @@ function trexSetMatrices(avars) {
 ///////////////////////////////////////////////////////////////////////////////////////
 
 function mydinoSetMatrices(avars) {
-    body.matrixAutoUpdate = false;
-    body.matrix.identity();                // root of the hierarchy
-    body.matrix.multiply(new THREE.Matrix4().makeTranslation(avars[0], avars[1], 0));   // translate body-center up
-    body.updateMatrixWorld();
+    // body.matrixAutoUpdate = false;
+    // body.matrix.identity();                // root of the hierarchy
+    // body.matrix.multiply(new THREE.Matrix4().makeTranslation(avars[0], avars[1], 0));   // translate body-center up
+    // body.updateMatrixWorld();
 
-    leftLeg.matrixAutoUpdate = false;
-    leftLeg.matrix.copy(body.matrix);      // start with the parent's matrix
-    leftLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0.0, -0.4, -0.125));     // translate to hip
-    leftLeg.matrix.multiply(new THREE.Matrix4().makeRotationZ(avars[2] * Math.PI / 180));  // rotate about hip
-    leftLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0, -0.5, 0));           // translate to center of upper leg
-    leftLeg.updateMatrixWorld();
+    // leftLeg.matrixAutoUpdate = false;
+    // leftLeg.matrix.copy(body.matrix);      // start with the parent's matrix
+    // leftLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0.0, -0.4, -0.125));     // translate to hip
+    // leftLeg.matrix.multiply(new THREE.Matrix4().makeRotationZ(avars[2] * Math.PI / 180));  // rotate about hip
+    // leftLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0, -1.0, 0));           // translate to center of upper leg
+    // leftLeg.updateMatrixWorld();
 
-    rightLeg.matrixAutoUpdate = false;
-    rightLeg.matrix.copy(body.matrix);     // start with the parent's matrix
-    rightLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0.0, -0.4, 0.125));     // translate to hip
-    rightLeg.matrix.multiply(new THREE.Matrix4().makeRotationZ(avars[3] * Math.PI / 180));  // rotate about hip
-    rightLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0, -0.5, 0));            // translate to center of upper leg
-    rightLeg.updateMatrixWorld();
+    // rightLeg.matrixAutoUpdate = false;
+    // rightLeg.matrix.copy(body.matrix);     // start with the parent's matrix
+    // rightLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0.0, -0.4, 0.125));     // translate to hip
+    // rightLeg.matrix.multiply(new THREE.Matrix4().makeRotationZ(avars[3] * Math.PI / 180));  // rotate about hip
+    // rightLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0, -1.0, 0));            // translate to center of upper leg
+    // rightLeg.updateMatrixWorld();
+
+    for (const part in myDino) {
+        myDino[part].matrixAutoUpdate = false;
+    }
+
+    myDino.torso.matrix.identity();             // root of the hierarchy
+    myDino.torso.matrix.multiply(new THREE.Matrix4().makeTranslation(avars[0], avars[1], 0)); // translate body-center up
+    myDino.torso.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 6)); // rotate torso
+    myDino.torso.updateMatrixWorld();
+
+    myDino.head.matrix.copy(myDino.torso.matrix);
+    myDino.head.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5, 2, 0));
+    myDino.head.matrix.multiply(new THREE.Matrix4().makeRotationZ(-Math.PI / 6));
+    myDino.head.updateMatrixWorld();
+
+    myDino.tail.matrix.copy(myDino.torso.matrix);
+    myDino.tail.matrix.multiply(new THREE.Matrix4().makeTranslation(1.75, -1.1, 0));
+    myDino.tail.matrix.multiply(new THREE.Matrix4().makeRotationZ(-Math.PI / 2));
+    myDino.tail.updateMatrixWorld();
+
+    myDino.leftUpperArm.matrix.copy(myDino.torso.matrix);
+    myDino.leftUpperArm.matrix.multiply(new THREE.Matrix4().makeTranslation(-1.25, 0.75, 0.75));
+    myDino.leftUpperArm.updateMatrixWorld();
+
+    myDino.rightUpperArm.matrix.copy(myDino.torso.matrix);
+    myDino.rightUpperArm.matrix.multiply(new THREE.Matrix4().makeTranslation(-1.25, 0.75, -0.75));
+    myDino.rightUpperArm.updateMatrixWorld();
+
+    myDino.leftForearm.matrix.copy(myDino.leftUpperArm.matrix);
+    myDino.leftForearm.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.375, 0.25, 0));
+    myDino.leftForearm.matrix.multiply(new THREE.Matrix4().makeRotationZ(-Math.PI / 2));
+    myDino.leftForearm.updateMatrixWorld();
+
+    myDino.rightForearm.matrix.copy(myDino.rightUpperArm.matrix);
+    myDino.rightForearm.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.375, 0.25, 0));
+    myDino.rightForearm.matrix.multiply(new THREE.Matrix4().makeRotationZ(-Math.PI / 2));
+    myDino.rightForearm.updateMatrixWorld();
+
+    myDino.leftClaw.matrix.copy(myDino.leftForearm.matrix);
+    myDino.leftClaw.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 2));
+    myDino.leftClaw.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.25, 0.25, 0));
+    myDino.leftClaw.updateMatrixWorld();
+
+    myDino.rightClaw.matrix.copy(myDino.rightForearm.matrix);
+    myDino.rightClaw.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 2));
+    myDino.rightClaw.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.25, 0.25, 0));
+    myDino.rightClaw.updateMatrixWorld();
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 // runs when all resources are loaded
