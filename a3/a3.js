@@ -165,9 +165,11 @@ minicooperKFobj.add(new Keyframe('rest pose', 5.5, [300]));
 minicooperKFobj.add(new Keyframe('rest pose', 6.0, [330]));
 
 const flipKFobj = new KFobj(flipSetMatrices, false, () => {flip = false});
-flipKFobj.add(new Keyframe('rest post', 0.0, [0, 0]));
-flipKFobj.add(new Keyframe('rest post', 0.5, [8, 180]));
-flipKFobj.add(new Keyframe('rest post', 1.0, [0, 360]));
+flipKFobj.add(new Keyframe('rest pose', 0.0, [0, 0]));
+flipKFobj.add(new Keyframe('rest pose', 0.25, [4.5, 90]));
+flipKFobj.add(new Keyframe('rest pose', 0.5, [6, 180]));
+flipKFobj.add(new Keyframe('rest pose', 0.75, [4.5, 270]));
+flipKFobj.add(new Keyframe('rest pose', 1.0, [0, 360]));
 
 // optional:   allow avar indexing by name
 // i.e., instead of   avar[1]    one can also use:    avar[ trexIndex["y"]]  
@@ -599,11 +601,12 @@ function mydinoSetMatrices(avars) {
     }
 
     myDino.torso.matrix.identity();             // root of the hierarchy
-    myDino.torso.matrix.copy(flipMatrix);
     myDino.torso.matrix.multiply(new THREE.Matrix4().makeRotationY(avars[4] * Math.PI/180));
     myDino.torso.matrix.multiply(new THREE.Matrix4().makeTranslation(0, 0, -3));
     myDino.torso.matrix.multiply(new THREE.Matrix4().makeTranslation(0, avars[1], 0)); // translate body-center up
     myDino.torso.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 6)); // rotate torso
+    // myDino.torso.matrix.copy(flipMatrix);
+    myDino.torso.matrix.multiply(flipMatrix);
     myDino.torso.updateMatrixWorld();
 
     myDino.head.matrix.copy(myDino.torso.matrix);
@@ -693,7 +696,7 @@ function flipSetMatrices(avars) {
     const mat = new THREE.Matrix4().identity();
     if (flip) {
         mat.multiply(new THREE.Matrix4().makeTranslation(0, avars[0], 0));
-        mat.multiply(new THREE.Matrix4().makeRotationX(avars[1] * Math.PI / 180));
+        mat.multiply(new THREE.Matrix4().makeRotationZ(avars[1] * Math.PI / 180));
     }
     flipMatrix = mat;
 }
