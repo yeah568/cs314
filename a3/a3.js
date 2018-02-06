@@ -81,8 +81,12 @@ class KFobj {
     };
     timestep(dt) {                //  take a time-step;  loop to beginning if at end
         this.currTime += dt;
-        if (this.currTime > this.maxTime)
+        if (this.currTime > this.maxTime) {
             this.currTime = 0;
+        }
+        if (this.currTime < 0) {
+            this.currTime = this.maxTime;
+        }
     }
     getAvars() {                  //  compute interpolated values for the current time
         var i = 1;
@@ -487,7 +491,7 @@ function update() {
         trexKFobj.timestep(time_direction * 0.02);               // the big dino
         mydinoKFobj.timestep(time_direction * 0.02);             // the blocky walking figure, your hierarchy
         minicooperKFobj.timestep(time_direction * 0.02);
-        aniTime += time_direction *  0.02;                        // update global time
+        aniTime += time_direction * 0.02;                        // update global time
     }
 
     var trexAvars = trexKFobj.getAvars();       // interpolate avars
