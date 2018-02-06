@@ -133,6 +133,24 @@ mydinoKFobj.add(new Keyframe('rest pose', 5.5, [8, 3.5, 20, -20, 330]));
 mydinoKFobj.add(new Keyframe('rest pose', 6.0, [8, 3, 30, -30, 360]));
 
 
+const minicooperKFobj = new KFobj(minicooperSetMatrices);
+// minicooperKFobj.add(new Keyframe('rest pose', 0.0, [0]));
+// minicooperKFobj.add(new Keyframe('rest pose', 1.0, [0]));
+
+minicooperKFobj.add(new Keyframe('rest pose', 0.0, [-30]));
+minicooperKFobj.add(new Keyframe('rest pose', 0.5, [0]));
+minicooperKFobj.add(new Keyframe('rest pose', 1.0, [30]));
+minicooperKFobj.add(new Keyframe('rest pose', 1.5, [60]));
+minicooperKFobj.add(new Keyframe('rest pose', 2.0, [90]));
+minicooperKFobj.add(new Keyframe('rest pose', 2.5, [120]));
+minicooperKFobj.add(new Keyframe('rest pose', 3.0, [150]));
+minicooperKFobj.add(new Keyframe('rest pose', 3.5, [180]));
+minicooperKFobj.add(new Keyframe('rest pose', 4.0, [210]));
+minicooperKFobj.add(new Keyframe('rest pose', 4.5, [240]));
+minicooperKFobj.add(new Keyframe('rest pose', 5.0, [270]));
+minicooperKFobj.add(new Keyframe('rest pose', 5.5, [300]));
+minicooperKFobj.add(new Keyframe('rest pose', 6.0, [330]));
+
 // optional:   allow avar indexing by name
 // i.e., instead of   avar[1]    one can also use:    avar[ trexIndex["y"]]  
 var trexIndex = { "x": 0, "y": 1, "z": 2 }; Object.freeze(trexIndex);
@@ -421,6 +439,7 @@ function checkKeyboard() {
         console.log('Reset!');
         trexKFobj.reset();
         mydinoKFobj.reset();
+        minicooperKFobj.reset();
     } else if (keyboard.pressed("o")) {
         camera.fov += 0.5;
         camera.updateProjectionMatrix();  // get three.js to recopute   M_proj
@@ -447,6 +466,7 @@ function update() {
     if (animation) {       //   update the current time of objects if  animation = true
         trexKFobj.timestep(0.02);               // the big dino
         mydinoKFobj.timestep(0.02);             // the blocky walking figure, your hierarchy
+        minicooperKFobj.timestep(0.02);
         aniTime += 0.02;                        // update global time
     }
 
@@ -455,6 +475,9 @@ function update() {
 
     var mydinoAvars = mydinoKFobj.getAvars();   // interpolate avars
     mydinoKFobj.setMatricesFunc(mydinoAvars);   // compute object-to-world matrices
+
+    const minicooperAvars = minicooperKFobj.getAvars();
+    minicooperKFobj.setMatricesFunc(minicooperAvars);
 
     laserUpdate();
 
@@ -500,6 +523,18 @@ function trexSetMatrices(avars) {
     trex2.matrix.multiply(new THREE.Matrix4().makeRotationY(-Math.PI / 2));
     trex2.matrix.multiply(new THREE.Matrix4().makeScale(1.5, 1.5, 1.5));
     trex2.updateMatrixWorld();
+}
+
+function minicooperSetMatrices(avars) {
+    const mc = meshes["minicooper2018"];
+
+    mc.matrixAutoUpdate = false;
+    mc.matrix.identity();
+    mc.matrix.multiply(new THREE.Matrix4().makeRotationX(-Math.PI/2));
+    mc.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI + avars[0] * Math.PI/180));
+    mc.matrix.multiply(new THREE.Matrix4().makeTranslation(-3, 0, 0));
+    mc.matrix.multiply(new THREE.Matrix4().makeScale(0.025, 0.025, 0.025));
+    mc.updateMatrixWorld();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -645,9 +680,9 @@ function onResourcesLoaded() {
     meshes["minicooper2"].rotation.set(-Math.PI / 2, 0, Math.PI / 2);
     scene.add(meshes["minicooper2"]);
 
-    meshes['minicooper2018'].position.set(6, 0, -5);
-    meshes['minicooper2018'].scale.set(0.025, 0.025, 0.025);
-    meshes['minicooper2018'].rotation.set(-Math.PI / 2, 0, 0);
+    // meshes['minicooper2018'].position.set(6, 0, -5);
+    // meshes['minicooper2018'].scale.set(0.025, 0.025, 0.025);
+    // meshes['minicooper2018'].rotation.set(-Math.PI / 2, 0, 0);
     scene.add(meshes['minicooper2018']);
 
     meshes["trex1"].position.set(-4, 1.90, -2);
