@@ -4,8 +4,10 @@ No external resources used.
 
 Implemented features:
 Lighting changes on keystroke (D)
+Jump/flip on keystroke (F)
 
 Keybindings:
 T - reverse time
 L - toggle laser
 D - dramatic lighting
+F - flip

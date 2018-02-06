@@ -51,6 +51,8 @@ var loadingManager = null;
 var RESOURCES_LOADED = false;
 
 let time_direction = 1;
+let flip = false;
+let flipMatrix = new THREE.Matrix4().identity();
 
 ////////////////////////////////////////////////////////////
 // Keyframe   and   KFobj  classes
@@ -65,11 +67,13 @@ class Keyframe {
 }
 
 class KFobj {
-    constructor(setMatricesFunc) {
+    constructor(setMatricesFunc, loop = true, onEnd) {
         this.keyFrameArray = [];          // list of keyframes
         this.maxTime = 0.0;               // time of last keyframe
         this.currTime = 0.0;              // current playback time
         this.setMatricesFunc = setMatricesFunc;    // function to call to update transformation matrices
+        this.loop = loop;
+        this.onEnd = onEnd;
     };
     reset() {                     // go back to first keyframe
         this.currTime = 0.0;
@@ -82,16 +86,20 @@ class KFobj {
     timestep(dt) {                //  take a time-step;  loop to beginning if at end
         this.currTime += dt;
         if (this.currTime > this.maxTime) {
-            this.currTime = 0;
+            this.loop ? this.currTime = 0 : this.onEnd();
         }
         if (this.currTime < 0) {
-            this.currTime = this.maxTime;
+            this.loop ? this.currTime = this.maxTime : this.onEnd();
         }
     }
     getAvars() {                  //  compute interpolated values for the current time
         var i = 1;
-        while (this.currTime > this.keyFrameArray[i].time)       // find the right pair of keyframes
+        while (this.currTime > this.keyFrameArray[i].time) {      // find the right pair of keyframes
             i++;
+            if (i === this.keyFrameArray.length) {
+                return this.keyFrameArray[i-1]
+            }
+        }
         var avars = [];
         for (var n = 0; n < this.keyFrameArray[i - 1].avars.length; n++) {   // interpolate the values
             var y0 = this.keyFrameArray[i - 1].avars[n];
@@ -138,7 +146,6 @@ mydinoKFobj.add(new Keyframe('rest pose', 5.0, [8, 3.5, -20, 20, 300]));
 mydinoKFobj.add(new Keyframe('rest pose', 5.5, [8, 3.5, 20, -20, 330]));
 mydinoKFobj.add(new Keyframe('rest pose', 6.0, [8, 3, 30, -30, 360]));
 
-
 const minicooperKFobj = new KFobj(minicooperSetMatrices);
 // minicooperKFobj.add(new Keyframe('rest pose', 0.0, [0]));
 // minicooperKFobj.add(new Keyframe('rest pose', 1.0, [0]));
@@ -156,6 +163,11 @@ minicooperKFobj.add(new Keyframe('rest pose', 4.5, [240]));
 minicooperKFobj.add(new Keyframe('rest pose', 5.0, [270]));
 minicooperKFobj.add(new Keyframe('rest pose', 5.5, [300]));
 minicooperKFobj.add(new Keyframe('rest pose', 6.0, [330]));
+
+const flipKFobj = new KFobj(flipSetMatrices, false, () => {flip = false});
+flipKFobj.add(new Keyframe('rest post', 0.0, [0, 0]));
+flipKFobj.add(new Keyframe('rest post', 0.5, [8, 180]));
+flipKFobj.add(new Keyframe('rest post', 1.0, [0, 360]));
 
 // optional:   allow avar indexing by name
 // i.e., instead of   avar[1]    one can also use:    avar[ trexIndex["y"]]  
@@ -453,6 +465,7 @@ function checkKeyboard() {
         trexKFobj.reset();
         mydinoKFobj.reset();
         minicooperKFobj.reset();
+        flipKFobj.reset();
     } else if (keyboard.pressed("o")) {
         camera.fov += 0.5;
         camera.updateProjectionMatrix();  // get three.js to recopute   M_proj
@@ -470,6 +483,9 @@ function checkKeyboard() {
         // dramatic lighting of portraits
         ambientLight.intensity = ambientLight.intensity > 0 ? 0 : 1;
         console.log('d');
+    } else if (keyboard.pressed('f')) {
+        flipKFobj.reset();
+        flip = true;
     }
 }
 
@@ -488,10 +504,12 @@ function update() {
     /////////// animated objects ////////////////
 
     if (animation) {       //   update the current time of objects if  animation = true
-        trexKFobj.timestep(time_direction * 0.02);               // the big dino
-        mydinoKFobj.timestep(time_direction * 0.02);             // the blocky walking figure, your hierarchy
-        minicooperKFobj.timestep(time_direction * 0.02);
-        aniTime += time_direction * 0.02;                        // update global time
+        const dt = time_direction * 0.02;
+        trexKFobj.timestep(dt);               // the big dino
+        mydinoKFobj.timestep(dt);             // the blocky walking figure, your hierarchy
+        minicooperKFobj.timestep(dt);
+        flipKFobj.timestep(dt);
+        aniTime += dt;                        // update global time
     }
 
     var trexAvars = trexKFobj.getAvars();       // interpolate avars
@@ -502,6 +520,9 @@ function update() {
 
     const minicooperAvars = minicooperKFobj.getAvars();
     minicooperKFobj.setMatricesFunc(minicooperAvars);
+
+    const flipAvars = flipKFobj.getAvars();
+    flipKFobj.setMatricesFunc(flipAvars);
 
     laserUpdate();
 
@@ -578,6 +599,7 @@ function mydinoSetMatrices(avars) {
     }
 
     myDino.torso.matrix.identity();             // root of the hierarchy
+    myDino.torso.matrix.copy(flipMatrix);
     myDino.torso.matrix.multiply(new THREE.Matrix4().makeRotationY(avars[4] * Math.PI/180));
     myDino.torso.matrix.multiply(new THREE.Matrix4().makeTranslation(0, 0, -3));
     myDino.torso.matrix.multiply(new THREE.Matrix4().makeTranslation(0, avars[1], 0)); // translate body-center up
@@ -667,6 +689,14 @@ function mydinoSetMatrices(avars) {
     myDino.rightFoot.updateMatrixWorld();
 }
 
+function flipSetMatrices(avars) {
+    const mat = new THREE.Matrix4().identity();
+    if (flip) {
+        mat.multiply(new THREE.Matrix4().makeTranslation(0, avars[0], 0));
+        mat.multiply(new THREE.Matrix4().makeRotationX(avars[1] * Math.PI / 180));
+    }
+    flipMatrix = mat;
+}
 
 /////////////////////////////////////////////////////////////////////////////////////
 // runs when all resources are loaded
