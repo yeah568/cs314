@@ -756,7 +756,7 @@ function onResourcesLoaded() {
     // meshes["teapot1"].scale.set(0.5, 0.5, 0.5);
     // scene.add(meshes["teapot1"]);
 
-    meshes["minicooper1"].position.set(-2, 0, 3);
+    meshes["minicooper1"].position.set(-6, 0, 6);
     meshes["minicooper1"].scale.set(0.025, 0.025, 0.025);
     meshes["minicooper1"].rotation.set(-Math.PI / 2, 0, Math.PI / 2);
     scene.add(meshes["minicooper1"]);
