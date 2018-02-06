@@ -147,22 +147,12 @@ mydinoKFobj.add(new Keyframe('rest pose', 5.5, [8, 3.5,  20, -20, 330, -10,  10,
 mydinoKFobj.add(new Keyframe('rest pose', 6.0, [8, 3.0,  30, -30, 360, -15,  15,  0, 30]));
 
 const minicooperKFobj = new KFobj(minicooperSetMatrices);
-// minicooperKFobj.add(new Keyframe('rest pose', 0.0, [0]));
-// minicooperKFobj.add(new Keyframe('rest pose', 1.0, [0]));
+minicooperKFobj.add(new Keyframe('rest pose', 0.0, [0]));
+minicooperKFobj.add(new Keyframe('rest pose', 6.0, [360]));
 
-minicooperKFobj.add(new Keyframe('rest pose', 0.0, [-30]));
-minicooperKFobj.add(new Keyframe('rest pose', 0.5, [0]));
-minicooperKFobj.add(new Keyframe('rest pose', 1.0, [30]));
-minicooperKFobj.add(new Keyframe('rest pose', 1.5, [60]));
-minicooperKFobj.add(new Keyframe('rest pose', 2.0, [90]));
-minicooperKFobj.add(new Keyframe('rest pose', 2.5, [120]));
-minicooperKFobj.add(new Keyframe('rest pose', 3.0, [150]));
-minicooperKFobj.add(new Keyframe('rest pose', 3.5, [180]));
-minicooperKFobj.add(new Keyframe('rest pose', 4.0, [210]));
-minicooperKFobj.add(new Keyframe('rest pose', 4.5, [240]));
-minicooperKFobj.add(new Keyframe('rest pose', 5.0, [270]));
-minicooperKFobj.add(new Keyframe('rest pose', 5.5, [300]));
-minicooperKFobj.add(new Keyframe('rest pose', 6.0, [330]));
+const followingTrexKFobj = new KFobj(followingTrexSetMatrices);
+followingTrexKFobj.add(new Keyframe('rest pose', 0.0, [0]));
+followingTrexKFobj.add(new Keyframe('rest pose', 6.0, [360]));
 
 const flipKFobj = new KFobj(flipSetMatrices, false, () => {flip = false});
 flipKFobj.add(new Keyframe('rest pose', 0.0, [0, 0]));
@@ -251,6 +241,7 @@ function initCamera() {
 ////////////////////////////////////////////////////////////////////////	
 
 let redLight;
+let spotLight;
 
 function initLights() {
     light = new THREE.PointLight(0xffffff);
@@ -259,8 +250,15 @@ function initLights() {
     ambientLight = new THREE.AmbientLight(0x606060);
     scene.add(ambientLight);
 
+    spotLight = new THREE.SpotLight(0xffffff);
+    spotLight.position.set(5, 8, 5);
+    spotLight.castShadow = true;
+
+    scene.add(spotLight);
+
     redLight = new THREE.PointLight(0xff0000, 50, 15, 2);
     light.position.set(-5, 8, -5);
+    light.target = myDino.torso;
     scene.add(redLight);
     redLight.intensity = 0;
 };
@@ -467,6 +465,7 @@ function checkKeyboard() {
         trexKFobj.reset();
         mydinoKFobj.reset();
         minicooperKFobj.reset();
+        followingTrexKFobj.reset();
         flipKFobj.reset();
     } else if (keyboard.pressed("o")) {
         camera.fov += 0.5;
@@ -510,6 +509,7 @@ function update() {
         trexKFobj.timestep(dt);               // the big dino
         mydinoKFobj.timestep(dt);             // the blocky walking figure, your hierarchy
         minicooperKFobj.timestep(dt);
+        followingTrexKFobj.timestep(dt);
         flipKFobj.timestep(dt);
         aniTime += dt;                        // update global time
     }
@@ -522,6 +522,9 @@ function update() {
 
     const minicooperAvars = minicooperKFobj.getAvars();
     minicooperKFobj.setMatricesFunc(minicooperAvars);
+
+    const followingTrexAvars = followingTrexKFobj.getAvars();
+    followingTrexKFobj.setMatricesFunc(followingTrexAvars);
 
     const flipAvars = flipKFobj.getAvars();
     flipKFobj.setMatricesFunc(flipAvars);
@@ -573,6 +576,7 @@ function trexSetMatrices(avars) {
 
     trex2.matrixAutoUpdate = false;     // tell three.js not to over-write our updates
     trex2.matrix.identity();
+    trex2.matrix.multiply(new THREE.Matrix4().makeTranslation(8, 0, -8)); // move this one out of the way
     trex2.matrix.multiply(new THREE.Matrix4().makeTranslation(avars[0], avars[1], avars[2]));
     trex2.matrix.multiply(new THREE.Matrix4().makeRotationY(-Math.PI / 2));
     trex2.matrix.multiply(new THREE.Matrix4().makeScale(1.5, 1.5, 1.5));
@@ -585,10 +589,23 @@ function minicooperSetMatrices(avars) {
     mc.matrixAutoUpdate = false;
     mc.matrix.identity();
     mc.matrix.multiply(new THREE.Matrix4().makeRotationX(-Math.PI/2));
-    mc.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI + avars[0] * Math.PI/180));
+    mc.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI - Math.PI/6 + avars[0] * Math.PI/180));
     mc.matrix.multiply(new THREE.Matrix4().makeTranslation(-3, 0, 0));
     mc.matrix.multiply(new THREE.Matrix4().makeScale(0.025, 0.025, 0.025));
     mc.updateMatrixWorld();
+}
+
+function followingTrexSetMatrices(avars) {
+    const trex1 = meshes["trex1"];
+
+    trex1.matrixAutoUpdate = false;
+    trex1.matrix.identity();
+    trex1.matrix.multiply(new THREE.Matrix4().makeTranslation(0, 1.9, 0));
+    trex1.matrix.multiply(new THREE.Matrix4().makeRotationY(Math.PI / 3 + avars[0] * Math.PI/180));
+    trex1.matrix.multiply(new THREE.Matrix4().makeTranslation(-3, 0, 0));
+    trex1.matrix.multiply(new THREE.Matrix4().makeRotationY(Math.PI));
+    trex1.matrix.multiply(new THREE.Matrix4().makeScale(1.5, 1.5, 1.5));
+    trex1.updateMatrixWorld();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -754,9 +771,9 @@ function onResourcesLoaded() {
     // meshes['minicooper2018'].rotation.set(-Math.PI / 2, 0, 0);
     scene.add(meshes['minicooper2018']);
 
-    meshes["trex1"].position.set(-4, 1.90, -2);
-    meshes["trex1"].scale.set(1.5, 1.5, 1.5);
-    meshes["trex1"].rotation.set(0, -Math.PI / 2, 0);
+    // meshes["trex1"].position.set(-4, 1.90, -2);
+    // meshes["trex1"].scale.set(1.5, 1.5, 1.5);
+    // meshes["trex1"].rotation.set(0, -Math.PI / 2, 0);
     scene.add(meshes["trex1"]);
 
     // note:  we will be animating trex2, so these transformations will be overwritten anyhow
