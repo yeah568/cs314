@@ -232,12 +232,19 @@ function initCamera() {
 // initLights():  SETUP LIGHTS
 ////////////////////////////////////////////////////////////////////////	
 
+let redLight;
+
 function initLights() {
     light = new THREE.PointLight(0xffffff);
     light.position.set(0, 4, 20);
     scene.add(light);
     ambientLight = new THREE.AmbientLight(0x606060);
     scene.add(ambientLight);
+
+    redLight = new THREE.PointLight(0xff0000, 50, 15, 2);
+    light.position.set(-5, 8, -5);
+    scene.add(redLight);
+    redLight.intensity = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////	
@@ -248,28 +255,28 @@ function initLights() {
 function initObjects() {
 
     // torus
-    torusGeometry = new THREE.TorusGeometry(1, 0.4, 10, 20);
-    torus = new THREE.Mesh(torusGeometry, diffuseMaterial);
-    torus.position.set(6, 1.2, -8);   // translation
-    torus.rotation.set(0, 0, 0);     // rotation about x,y,z axes
-    scene.add(torus);
+    // torusGeometry = new THREE.TorusGeometry(1, 0.4, 10, 20);
+    // torus = new THREE.Mesh(torusGeometry, diffuseMaterial);
+    // torus.position.set(6, 1.2, -8);   // translation
+    // torus.rotation.set(0, 0, 0);     // rotation about x,y,z axes
+    // scene.add(torus);
 
-    // sphere representing light source
-    sphereGeometry = new THREE.SphereGeometry(0.3, 32, 32);    // radius, segments, segments
-    sphere = new THREE.Mesh(sphereGeometry, basicMaterial);
-    sphere.position.set(0, 4, 2);
-    sphere.position.set(light.position.x, light.position.y, light.position.z);
-    scene.add(sphere);
+    // // sphere representing light source
+    // sphereGeometry = new THREE.SphereGeometry(0.3, 32, 32);    // radius, segments, segments
+    // sphere = new THREE.Mesh(sphereGeometry, basicMaterial);
+    // sphere.position.set(0, 4, 2);
+    // sphere.position.set(light.position.x, light.position.y, light.position.z);
+    // scene.add(sphere);
 
     // world-frame axes
     worldFrame = new THREE.AxisHelper(5);
     scene.add(worldFrame);
 
-    // box
-    boxGeometry = new THREE.BoxGeometry(1, 1, 1);    // width, height, depth
-    box = new THREE.Mesh(boxGeometry, diffuseMaterial);
-    box.position.set(-6, 0.5, -8);
-    scene.add(box);
+    // // box
+    // boxGeometry = new THREE.BoxGeometry(1, 1, 1);    // width, height, depth
+    // box = new THREE.Mesh(boxGeometry, diffuseMaterial);
+    // box.position.set(-6, 0.5, -8);
+    // scene.add(box);
 
     // floor
     floorGeometry = new THREE.PlaneBufferGeometry(20, 20);
@@ -278,49 +285,49 @@ function initObjects() {
     floor.rotation.x = Math.PI / 2;
     scene.add(floor);
 
-    // cylinder
-    cylinderGeometry = new THREE.CylinderGeometry(0.30, 0.30, 1, 20, 4);
-    cylinder = new THREE.Mesh(cylinderGeometry, diffuseMaterial);
-    scene.add(cylinder);
-    cylinder.matrixAutoUpdate = true;
-    cylinder.position.set(2, 0.5, -8);
+    // // cylinder
+    // cylinderGeometry = new THREE.CylinderGeometry(0.30, 0.30, 1, 20, 4);
+    // cylinder = new THREE.Mesh(cylinderGeometry, diffuseMaterial);
+    // scene.add(cylinder);
+    // cylinder.matrixAutoUpdate = true;
+    // cylinder.position.set(2, 0.5, -8);
 
-    //  mcc:  multi-colour cube     [https://stemkoski.github.io/Three.js/HelloWorld.html] 
-    var cubeMaterialArray = [];    // one material for each side of cube;  order: x+,x-,y+,y-,z+,z-
-    cubeMaterialArray.push(new THREE.MeshBasicMaterial({ color: 0xff3333 }));
-    cubeMaterialArray.push(new THREE.MeshBasicMaterial({ color: 0xff8800 }));
-    cubeMaterialArray.push(new THREE.MeshBasicMaterial({ color: 0xffff33 }));
-    cubeMaterialArray.push(new THREE.MeshBasicMaterial({ color: 0x33ff33 }));
-    cubeMaterialArray.push(new THREE.MeshBasicMaterial({ color: 0x3333ff }));
-    cubeMaterialArray.push(new THREE.MeshBasicMaterial({ color: 0x8833ff }));
-    var mccMaterials = new THREE.MeshFaceMaterial(cubeMaterialArray);
-    var mccGeometry = new THREE.BoxGeometry(1, 1, 1, 1, 1, 1);   // xyzz size,  xyz # segs
-    mcc = new THREE.Mesh(mccGeometry, mccMaterials);   // 
-    mcc.position.set(-4, 0.5, -8);
-    scene.add(mcc);
+    // //  mcc:  multi-colour cube     [https://stemkoski.github.io/Three.js/HelloWorld.html] 
+    // var cubeMaterialArray = [];    // one material for each side of cube;  order: x+,x-,y+,y-,z+,z-
+    // cubeMaterialArray.push(new THREE.MeshBasicMaterial({ color: 0xff3333 }));
+    // cubeMaterialArray.push(new THREE.MeshBasicMaterial({ color: 0xff8800 }));
+    // cubeMaterialArray.push(new THREE.MeshBasicMaterial({ color: 0xffff33 }));
+    // cubeMaterialArray.push(new THREE.MeshBasicMaterial({ color: 0x33ff33 }));
+    // cubeMaterialArray.push(new THREE.MeshBasicMaterial({ color: 0x3333ff }));
+    // cubeMaterialArray.push(new THREE.MeshBasicMaterial({ color: 0x8833ff }));
+    // var mccMaterials = new THREE.MeshFaceMaterial(cubeMaterialArray);
+    // var mccGeometry = new THREE.BoxGeometry(1, 1, 1, 1, 1, 1);   // xyzz size,  xyz # segs
+    // mcc = new THREE.Mesh(mccGeometry, mccMaterials);   // 
+    // mcc.position.set(-4, 0.5, -8);
+    // scene.add(mcc);
 
-    // cone
-    coneGeometry = new THREE.CylinderGeometry(0.0, 0.50, 1, 20, 4); // rTop, rBot, h, #rsegs, #hsegs
-    cone = new THREE.Mesh(coneGeometry, diffuseMaterial);
-    cone.position.set(-2, 0.5, -8)
-    scene.add(cone);
+    // // cone
+    // coneGeometry = new THREE.CylinderGeometry(0.0, 0.50, 1, 20, 4); // rTop, rBot, h, #rsegs, #hsegs
+    // cone = new THREE.Mesh(coneGeometry, diffuseMaterial);
+    // cone.position.set(-2, 0.5, -8)
+    // scene.add(cone);
 
-    //  CUSTOM OBJECT 
-    var geom = new THREE.Geometry();
-    var v0 = new THREE.Vector3(0, 0, 0);
-    var v1 = new THREE.Vector3(3, 0, 0);
-    var v2 = new THREE.Vector3(0, 3, 0);
-    var v3 = new THREE.Vector3(3, 3, 0);
-    geom.vertices.push(v0);
-    geom.vertices.push(v1);
-    geom.vertices.push(v2);
-    geom.vertices.push(v3);
-    geom.faces.push(new THREE.Face3(0, 1, 2));
-    geom.faces.push(new THREE.Face3(1, 3, 2));
-    geom.computeFaceNormals();
-    customObject = new THREE.Mesh(geom, diffuseMaterial2);
-    customObject.position.set(0, 0, -10);
-    scene.add(customObject);
+    // //  CUSTOM OBJECT 
+    // var geom = new THREE.Geometry();
+    // var v0 = new THREE.Vector3(0, 0, 0);
+    // var v1 = new THREE.Vector3(3, 0, 0);
+    // var v2 = new THREE.Vector3(0, 3, 0);
+    // var v3 = new THREE.Vector3(3, 3, 0);
+    // geom.vertices.push(v0);
+    // geom.vertices.push(v1);
+    // geom.vertices.push(v2);
+    // geom.vertices.push(v3);
+    // geom.faces.push(new THREE.Face3(0, 1, 2));
+    // geom.faces.push(new THREE.Face3(1, 3, 2));
+    // geom.computeFaceNormals();
+    // customObject = new THREE.Mesh(geom, diffuseMaterial2);
+    // customObject.position.set(0, 0, -10);
+    // scene.add(customObject);
 
     // laser line
     var geom = new THREE.Geometry();
@@ -452,6 +459,13 @@ function checkKeyboard() {
         time_direction *= -1;                       // toggle time direction
     } else if (keyboard.pressed('l')) {
         laserLine.visible = !laserLine.visible;     // toggle laser
+    } else if (keyboard.pressed('d')) {             // toggle Dramatic lighting
+        redLight.intensity = redLight.intensity > 0 ? 0 : 50;
+        light.intensity = light.intensity > 0 ? 0 : 1;
+        // killing ambient light is a thing some random site told me to do for
+        // dramatic lighting of portraits
+        ambientLight.intensity = ambientLight.intensity > 0 ? 0 : 1;
+        console.log('d');
     }
 }
 
@@ -658,9 +672,9 @@ function onResourcesLoaded() {
 
     // Clone models into meshes;   [Michiel:  AFAIK this makes a "shallow" copy of the model,
     //                             i.e., creates references to the geometry, and not full copies ]
-    meshes["armadillo1"] = models.armadillo.mesh.clone();
-    meshes["bunny1"] = models.bunny.mesh.clone();
-    meshes["teapot1"] = models.teapot.mesh.clone();
+    // meshes["armadillo1"] = models.armadillo.mesh.clone();
+    // meshes["bunny1"] = models.bunny.mesh.clone();
+    // meshes["teapot1"] = models.teapot.mesh.clone();
     meshes["minicooper1"] = models.minicooper.mesh.clone();
     meshes["minicooper2"] = models.minicooper.mesh.clone();
     meshes["minicooper2018"] = models.minicooper.mesh.clone();
@@ -669,19 +683,19 @@ function onResourcesLoaded() {
 
     // Reposition individual meshes, then add meshes to scene
 
-    meshes["armadillo1"].position.set(-7, 1.5, 2);
-    meshes["armadillo1"].rotation.set(0, -Math.PI / 2, 0);
-    meshes["armadillo1"].scale.set(1.5, 1.5, 1.5);
-    scene.add(meshes["armadillo1"]);
+    // meshes["armadillo1"].position.set(-7, 1.5, 2);
+    // meshes["armadillo1"].rotation.set(0, -Math.PI / 2, 0);
+    // meshes["armadillo1"].scale.set(1.5, 1.5, 1.5);
+    // scene.add(meshes["armadillo1"]);
 
-    meshes["bunny1"].position.set(-5, 0.2, 8);
-    meshes["bunny1"].rotation.set(0, Math.PI, 0);
-    meshes["bunny1"].scale.set(0.8, 0.8, 0.8);
-    scene.add(meshes["bunny1"]);
+    // meshes["bunny1"].position.set(-5, 0.2, 8);
+    // meshes["bunny1"].rotation.set(0, Math.PI, 0);
+    // meshes["bunny1"].scale.set(0.8, 0.8, 0.8);
+    // scene.add(meshes["bunny1"]);
 
-    meshes["teapot1"].position.set(3, 0, -6);
-    meshes["teapot1"].scale.set(0.5, 0.5, 0.5);
-    scene.add(meshes["teapot1"]);
+    // meshes["teapot1"].position.set(3, 0, -6);
+    // meshes["teapot1"].scale.set(0.5, 0.5, 0.5);
+    // scene.add(meshes["teapot1"]);
 
     meshes["minicooper1"].position.set(-2, 0, 3);
     meshes["minicooper1"].scale.set(0.025, 0.025, 0.025);
