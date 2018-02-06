@@ -130,21 +130,21 @@ trexKFobj.add(new Keyframe('rest pose', 4.0, [0, 1.9, 0]));
 console.log('kf 0.1 = ', trexKFobj.getAvars(0.1));    // interpolate for t=0.1
 console.log('kf 2.9 = ', trexKFobj.getAvars(2.9));    // interpolate for t=2.9
 
-// keyframes for mydino:    name, time, [x, y, theta1, theta2, theta3 (rot for body)]
+// keyframes for mydino:    name, time, [x, y, theta1, theta2, theta3 (rot for body, left arm, right arm)]
 var mydinoKFobj = new KFobj(mydinoSetMatrices);
-mydinoKFobj.add(new Keyframe('rest pose', 0.0, [8, 3, 30, -30, 0]));
-mydinoKFobj.add(new Keyframe('rest pose', 0.5, [8, 3.5, 20, -20, 30]));
-mydinoKFobj.add(new Keyframe('rest pose', 1.0, [8, 3.5, -20, 20, 60]));
-mydinoKFobj.add(new Keyframe('rest pose', 1.5, [8, 3, -30, 30, 90]));
-mydinoKFobj.add(new Keyframe('rest pose', 2.0, [8, 3.5, -20, 20, 120]));
-mydinoKFobj.add(new Keyframe('rest pose', 2.5, [8, 3.5, 20, -20, 150]));
-mydinoKFobj.add(new Keyframe('rest pose', 3.0, [8, 3, 30, -30, 180]));
-mydinoKFobj.add(new Keyframe('rest pose', 3.5, [8, 3.5, 20, -20, 210]));
-mydinoKFobj.add(new Keyframe('rest pose', 4.0, [8, 3.5, -20, 20, 240]));
-mydinoKFobj.add(new Keyframe('rest pose', 4.5, [8, 3, -30, 30, 270]));
-mydinoKFobj.add(new Keyframe('rest pose', 5.0, [8, 3.5, -20, 20, 300]));
-mydinoKFobj.add(new Keyframe('rest pose', 5.5, [8, 3.5, 20, -20, 330]));
-mydinoKFobj.add(new Keyframe('rest pose', 6.0, [8, 3, 30, -30, 360]));
+mydinoKFobj.add(new Keyframe('rest pose', 0.0, [8, 3.0,  30, -30,   0, -15,  15,  0, 30]));
+mydinoKFobj.add(new Keyframe('rest pose', 0.5, [8, 3.5,  20, -20,  30, -10,  10,  0, 20]));
+mydinoKFobj.add(new Keyframe('rest pose', 1.0, [8, 3.5, -20,  20,  60,  10, -10, 20,  0]));
+mydinoKFobj.add(new Keyframe('rest pose', 1.5, [8, 3.0, -30,  30,  90,  15, -15, 30,  0]));
+mydinoKFobj.add(new Keyframe('rest pose', 2.0, [8, 3.5, -20,  20, 120,  10, -10, 20,  0]));
+mydinoKFobj.add(new Keyframe('rest pose', 2.5, [8, 3.5,  20, -20, 150, -10,  10,  0, 20]));
+mydinoKFobj.add(new Keyframe('rest pose', 3.0, [8, 3.0,  30, -30, 180, -15,  15,  0, 30]));
+mydinoKFobj.add(new Keyframe('rest pose', 3.5, [8, 3.5,  20, -20, 210, -10,  10,  0, 20]));
+mydinoKFobj.add(new Keyframe('rest pose', 4.0, [8, 3.5, -20,  20, 240,  10, -10, 20,  0]));
+mydinoKFobj.add(new Keyframe('rest pose', 4.5, [8, 3.0, -30,  30, 270,  15, -15, 30,  0]));
+mydinoKFobj.add(new Keyframe('rest pose', 5.0, [8, 3.5, -20,  20, 300,  10, -10, 20,  0]));
+mydinoKFobj.add(new Keyframe('rest pose', 5.5, [8, 3.5,  20, -20, 330, -10,  10,  0, 20]));
+mydinoKFobj.add(new Keyframe('rest pose', 6.0, [8, 3.0,  30, -30, 360, -15,  15,  0, 30]));
 
 const minicooperKFobj = new KFobj(minicooperSetMatrices);
 // minicooperKFobj.add(new Keyframe('rest pose', 0.0, [0]));
@@ -605,7 +605,6 @@ function mydinoSetMatrices(avars) {
     myDino.torso.matrix.multiply(new THREE.Matrix4().makeTranslation(0, 0, -3));
     myDino.torso.matrix.multiply(new THREE.Matrix4().makeTranslation(0, avars[1], 0)); // translate body-center up
     myDino.torso.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 6)); // rotate torso
-    // myDino.torso.matrix.copy(flipMatrix);
     myDino.torso.matrix.multiply(flipMatrix);
     myDino.torso.updateMatrixWorld();
 
@@ -622,11 +621,15 @@ function mydinoSetMatrices(avars) {
     myDino.tail.updateMatrixWorld();
 
     myDino.leftUpperArm.matrix.copy(myDino.torso.matrix);
-    myDino.leftUpperArm.matrix.multiply(new THREE.Matrix4().makeTranslation(-1.25, 0.75, 0.75));
+    myDino.leftUpperArm.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.75, 0.75, 0.75));
+    myDino.leftUpperArm.matrix.multiply(new THREE.Matrix4().makeRotationZ(avars[5] * Math.PI/180));
+    myDino.leftUpperArm.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5, 0, 0));
     myDino.leftUpperArm.updateMatrixWorld();
 
     myDino.rightUpperArm.matrix.copy(myDino.torso.matrix);
-    myDino.rightUpperArm.matrix.multiply(new THREE.Matrix4().makeTranslation(-1.25, 0.75, -0.75));
+    myDino.rightUpperArm.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.75, 0.75, -0.75));
+    myDino.rightUpperArm.matrix.multiply(new THREE.Matrix4().makeRotationZ(avars[6] * Math.PI/180));
+    myDino.rightUpperArm.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5, 0, 0));
     myDino.rightUpperArm.updateMatrixWorld();
 
     myDino.leftForearm.matrix.copy(myDino.leftUpperArm.matrix);
@@ -651,7 +654,7 @@ function mydinoSetMatrices(avars) {
 
     myDino.leftFemur.matrix.copy(myDino.torso.matrix);
     myDino.leftFemur.matrix.multiply(new THREE.Matrix4().makeTranslation(0, -1, 0.625));
-    myDino.leftFemur.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 6 + avars[2] * Math.PI / 180)); //Math.PI/6));
+    myDino.leftFemur.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 6 + avars[2] * Math.PI / 180)); 
     myDino.leftFemur.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.625, 0, 0));
     myDino.leftFemur.updateMatrixWorld();
 
@@ -682,13 +685,15 @@ function mydinoSetMatrices(avars) {
     myDino.rightMetatarsals.updateMatrixWorld();
 
     myDino.leftFoot.matrix.copy(myDino.leftMetatarsals.matrix);
-    myDino.leftFoot.matrix.multiply(new THREE.Matrix4().makeRotationZ(-Math.PI/2));
-    myDino.leftFoot.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5, -0.25, 0));
+    myDino.leftFoot.matrix.multiply(new THREE.Matrix4().makeTranslation(0, -0.5, 0));
+    myDino.leftFoot.matrix.multiply(new THREE.Matrix4().makeRotationZ(-Math.PI/2 + avars[7] * Math.PI/180));
+    myDino.leftFoot.matrix.multiply(new THREE.Matrix4().makeTranslation(-1, -0.25, 0));
     myDino.leftFoot.updateMatrixWorld();
 
     myDino.rightFoot.matrix.copy(myDino.rightMetatarsals.matrix);
-    myDino.rightFoot.matrix.multiply(new THREE.Matrix4().makeRotationZ(-Math.PI/2));
-    myDino.rightFoot.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5, -0.25, 0));
+    myDino.rightFoot.matrix.multiply(new THREE.Matrix4().makeTranslation(0, -0.5, 0));
+    myDino.rightFoot.matrix.multiply(new THREE.Matrix4().makeRotationZ(-Math.PI/2 + avars[8] * Math.PI/180));
+    myDino.rightFoot.matrix.multiply(new THREE.Matrix4().makeTranslation(-1, -0.25, 0));
     myDino.rightFoot.updateMatrixWorld();
 }
 
