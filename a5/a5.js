@@ -148,7 +148,7 @@ scene.add(posxWall);
 var textureLoader = new THREE.TextureLoader();
 floorTexture = textureLoader.load( "images/floor.jpg" );
 floorTexture.magFilter = THREE.NearestFilter;
-floorTexture.minFilter = THREE.NearestFilter
+floorTexture.minFilter = THREE.LinearMipMapNearestFilter;
 floorMaterial = new THREE.MeshBasicMaterial( {map: floorTexture, side:THREE.DoubleSide });
 floorGeometry = new THREE.PlaneBufferGeometry(15, 15);
 floor = new THREE.Mesh(floorGeometry, floorMaterial);
