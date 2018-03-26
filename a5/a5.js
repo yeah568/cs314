@@ -128,7 +128,7 @@ scene.add(worldFrame);
 // Skybox texture
 /////////////////////////////////////	
 
-var size = 10;
+var size = 1000;
 wallGeometry = new THREE.PlaneBufferGeometry(2 * size, 2 * size);
 
 posxTexture = textureLoader.load("images/posx.jpg");   //  load texture map
@@ -139,6 +139,40 @@ posxWall.rotation.y = Math.PI / 2;
 scene.add(posxWall);
 
 ////// TODO:  add the other walls of the skybox
+negxTexture = textureLoader.load('images/negx.jpg');
+negxMaterial = new THREE.MeshBasicMaterial({ map: negxTexture, side: THREE.DoubleSide });
+negxWall = new THREE.Mesh(wallGeometry, negxMaterial);
+negxWall.position.x = size;
+negxWall.rotation.y = -Math.PI / 2;
+scene.add(negxWall);
+
+posyTexture = textureLoader.load("images/posy.jpg");
+posyMaterial = new THREE.MeshBasicMaterial({ map: posyTexture, side: THREE.DoubleSide });
+posyWall = new THREE.Mesh(wallGeometry, posyMaterial);
+posyWall.position.y = size;
+posyWall.rotation.x = -Math.PI / 2;
+scene.add(posyWall);
+
+negyTexture = textureLoader.load('images/negy.jpg');
+negyMaterial = new THREE.MeshBasicMaterial({ map: negyTexture, side: THREE.DoubleSide });
+negyWall = new THREE.Mesh(wallGeometry, negyMaterial);
+negyWall.position.y = -size;
+negyWall.rotation.x = Math.PI / 2;
+scene.add(negyWall);
+
+poszTexture = textureLoader.load("images/posz.jpg");
+poszMaterial = new THREE.MeshBasicMaterial({ map: poszTexture, side: THREE.DoubleSide });
+poszWall = new THREE.Mesh(wallGeometry, poszMaterial); 
+poszWall.position.z = size;
+poszWall.rotation.y = Math.PI;
+scene.add(poszWall);
+
+negzTexture = textureLoader.load('images/negz.jpg');
+negzMaterial = new THREE.MeshBasicMaterial({ map: negzTexture, side: THREE.DoubleSide });
+negzWall = new THREE.Mesh(wallGeometry, negzMaterial);
+negzWall.position.z = -size;
+negzWall.rotation.x = 0;
+scene.add(negzWall);
 
 
 /////////////////////////////////////	
