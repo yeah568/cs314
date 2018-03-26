@@ -158,6 +158,7 @@ negyMaterial = new THREE.MeshBasicMaterial({ map: negyTexture, side: THREE.Doubl
 negyWall = new THREE.Mesh(wallGeometry, negyMaterial);
 negyWall.position.y = -size;
 negyWall.rotation.x = Math.PI / 2;
+negyWall.rotation.y = Math.PI;
 scene.add(negyWall);
 
 poszTexture = textureLoader.load("images/posz.jpg");
