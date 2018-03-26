@@ -34,8 +34,28 @@ void main()
 </script>
 
 <script id="holeyShader" type="x-shader/x-fragment">
+varying vec3 vcsNormal;
+varying vec3 vcsPosition;
+varying vec3 ocsPosition;
+
+uniform vec3 lightPosition;
+uniform vec3 myColor;
+
 void main( void ) {
-  gl_FragColor = vec4(0.6,0.6,1.0,1.0);  
+  
+
+  float sphereRadius = 0.25;
+  float d = 1.5;
+  
+  vec3 nearestCenter = floor(ocsPosition / d) * d;
+  vec3 sq = pow(ocsPosition - nearestCenter, vec3(2.0, 2.0, 2.0));
+  float f = sq.x + sq.y + sq.z - pow(sphereRadius, 2.0);
+  if (f <= 0.0) {
+    discard;
+  }
+  vec3 L = normalize(lightPosition - vcsPosition);
+  float i = dot(normalize(vcsNormal), L);
+  gl_FragColor = vec4((myColor * i), 1.0);  
 }
 </script>
 
