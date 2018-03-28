@@ -84,10 +84,13 @@ varying vec3 ocsPosition;
 varying vec3 vcsPosition;
 
 void main( void ) {
+  vec3 I = normalize(vcsPosition);
   vec3 R = reflect(vcsPosition, vcsNormal);
-  vec3 ref = matrixWorld * R;
-  if (ref.y > ref.x && ref.y > ref.z) {
-    gl_FragColor = texture2D(myTexture, vec2(u, v));
+  vec4 ref = matrixWorld * vec4(R, 0.0);
+  if (ref.y > 0.0 && 
+      abs(ref.y) >= abs(ref.x) && 
+      abs(ref.y) > abs(ref.z)) {
+    gl_FragColor = texture2D(myTexture, vec2(ref.x, -ref.z));
   } else {
     vec3 L = normalize(lightPosition - vcsPosition);
     float i = dot(normalize(vcsNormal), L);
