@@ -150,6 +150,7 @@ posyTexture = textureLoader.load("images/posy.jpg");
 posyMaterial = new THREE.MeshBasicMaterial({ map: posyTexture, side: THREE.DoubleSide });
 posyWall = new THREE.Mesh(wallGeometry, posyMaterial);
 posyWall.position.y = size;
+posyWall.rotation.y = Math.PI;
 posyWall.rotation.x = -Math.PI / 2;
 scene.add(posyWall);
 
