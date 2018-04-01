@@ -195,6 +195,9 @@ vec3 rayCast(ray myRay)             // return color
 
       finalColor += kLocal*localColor * frac;
       frac *= kSpec;
+      if (frac < 0.05) {
+        break;
+      }
     } else {
       finalColor += bgColor(reflectedRay) * frac;
       break;
