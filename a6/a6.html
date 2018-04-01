@@ -168,7 +168,7 @@ vec3 bgColor(ray myRay)
 // rayCast2():  cast the reflected ray, and compute a color for it
 /////////////////////////////////////////////////////////////////////////////////
 
-vec3 rayCast2(ray myRay)             // return the color for this reflected ray
+vec3 rayCast3(ray myRay)             // return the color for this reflected ray
 {
   float nearest_t = rayT(myRay);                  // find closest object
   float kSpec = nearestSphere.mtrl.kSpec;         // keep these lines for use in step (7)
@@ -182,6 +182,34 @@ vec3 rayCast2(ray myRay)             // return the color for this reflected ray
     vec3 localColor = localShade(P, N, I, nearestSphere.mtrl.color);  // local shading
 
     return localColor;
+  }
+  return bgColor(myRay);       // return checkeboard texture
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+// rayCast2():  cast the reflected ray, and compute a color for it
+/////////////////////////////////////////////////////////////////////////////////
+
+vec3 rayCast2(ray myRay)             // return the color for this reflected ray
+{
+  float nearest_t = rayT(myRay);                  // find closest object
+  float kSpec = nearestSphere.mtrl.kSpec;         // keep these lines for use in step (7)
+  float kLocal = nearestSphere.mtrl.kLocal;       // keep these lines for use in step (7)
+  if (nearest_t < largeT) {       // hit an object?
+
+    vec3 P = myRay.origin.xyz + nearest_t * myRay.direction.xyz;
+    vec3 N = normalize(P - nearestSphere.position);
+    vec3 I = normalize(P - myRay.origin.xyz);
+
+    vec3 localColor = localShade(P, N, I, nearestSphere.mtrl.color);  // local shading
+
+    ray reflectedRay;
+    reflectedRay.origin = P;
+    reflectedRay.direction = reflect(I, N);
+
+    vec3 reflectedColor = rayCast3(reflectedRay);
+
+    return (kLocal*localColor + kSpec*reflectedColor);
   }
   return bgColor(myRay);       // return checkeboard texture
 }
