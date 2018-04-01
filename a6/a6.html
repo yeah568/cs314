@@ -127,9 +127,14 @@ vec3 localShade(vec3 P, vec3 N, vec3 I, vec3 surfColor) {
 //      surfColor is the assigned color of the surface.
 //  (2) now additionally check to see if the object is in shadow by building and casting
 //      a shadow ray.  If the point is in shadow, return black. Otherwise return the diffuse shading.
-
-   vec3 yourColor = vec3(0,0,0);
-   return yourColor;
+  
+  vec3 L = normalize(lightPosition - P);
+  float i = dot(normalize(N), L);
+  
+  if (i < 0.0) {
+    return vec3(0.0, 0.0, 0.0); // black
+  } 
+   return surfColor * i;
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -184,11 +189,15 @@ vec3 rayCast(ray myRay)             // return color
   float kSpec = nearestSphere.mtrl.kSpec;         // keep these lines for use in step (7)
   float kLocal = nearestSphere.mtrl.kLocal;       // keep these lines for use in step (7)
   if (nearest_t < largeT) {       // hit an object?
-    return vec3(1,1,1);           // color this white for now (but replace this with steps 1--4 below)
+
+    vec3 P = myRay.origin.xyz + nearest_t * myRay.direction.xyz;
+    vec3 N = normalize(P - nearestSphere.position);
+    vec3 I = vec3(0.0, 0.0, 0.0);
+
+
+    return localShade(P, N, I, nearestSphere.mtrl.color);
 
 // TODO: 
-// (1) compute the actual intersection point, P, given the nearest_t value;
-// (2) compute the normal, N;  the center of the sphere is given by   nearestSphere.position
 // (3) compute the incident direction, I
 // (4) call the localShade function to compute the local shading
 
